@@ -1,0 +1,219 @@
+JJFO NEWS BULLETIN v2 - FAQ & TROUBLESHOOTING
+==============================================
+
+GENERAL QUESTIONS
+=================
+
+Q: Why is this completely free?
+A: We use:
+   - GitHub Actions (free tier: 2000 min/month)
+   - Google Sheets (free tier: unlimited)
+   - Resend (free tier: 100 emails/day)
+   - RSS feeds & web scraping (no API costs)
+   Total cost: $0/month
+
+Q: Will this work forever without paying?
+A: Yes. Your usage (1 email/day, ~1 min/day GitHub Actions) is well within free tiers.
+
+Q: What if I add more companies?
+A: System can handle 100+ companies. Scraping takes ~2-3 minutes.
+
+Q: Can I change the time from 8 AM IST?
+A: Yes. Edit .github/workflows/daily-scrape.yml line 11:
+   Change: "30 2 * * *" to your desired time
+   Format: "MM HH * * *" (minutes hours * * *)
+   Example: "0 9 * * *" = 9:00 AM UTC
+
+Q: Can I add more email recipients?
+A: Yes. Add emails to "Email_Recipients" sheet in Google Sheets.
+   Scraper will send to all emails in that sheet.
+
+Q: How do I add new companies?
+A: Add to "Companies" sheet in Google Sheets:
+   - Column A: Company Name
+   - Column B: Sector
+   - Column C: Competitors (comma-separated)
+
+Q: How do I remove companies?
+A: Delete the row from "Companies" sheet in Google Sheets.
+
+Q: Can I customize the email format?
+A: Yes. Edit scraper.py function format_email() around line 180.
+
+Q: What if a source website changes?
+A: Update SOURCES dictionary in scraper.py with new URLs.
+
+TECHNICAL QUESTIONS
+===================
+
+Q: What is GitHub Actions?
+A: Free service that runs code on a schedule. Like a robot that executes your scraper daily.
+
+Q: What is Google Sheets API?
+A: Allows programs to read/write to Google Sheets automatically.
+
+Q: What is Resend?
+A: Email service. Sends emails from your scraper to recipients.
+
+Q: Why do I need a Service Account?
+A: Allows GitHub Actions to access your Google Sheets without logging in manually.
+
+Q: What if GitHub Actions fails?
+A: Check the Actions tab in your GitHub repo. Click the failed workflow to see error logs.
+
+Q: Can I run the scraper manually?
+A: Yes. Download scraper.py and run: python scraper.py
+   (Requires Python 3.7+, dependencies installed, credentials.json in same folder)
+
+DEPLOYMENT QUESTIONS
+====================
+
+Q: I'm stuck on Step X. What do I do?
+A: Go to DEPLOYMENT_GUIDE.txt and re-read that step carefully.
+   Most issues are due to typos or missing spaces.
+
+Q: Do I need to be a programmer?
+A: No. Just follow the steps exactly as written.
+   Copy-paste carefully. No coding needed.
+
+Q: How long does deployment take?
+A: ~30-40 minutes total if following steps carefully.
+
+Q: Can I deploy on my own server instead?
+A: Yes, but you'd need to pay for hosting. GitHub Actions is free.
+
+Q: What if I mess up?
+A: You can always delete the repo and start over. No permanent damage.
+
+Q: Do I need to keep my computer on?
+A: No. GitHub Actions runs on GitHub's servers, not your computer.
+
+TROUBLESHOOTING
+===============
+
+PROBLEM: Email not received
+SOLUTION:
+1. Check GitHub Actions logs:
+   - Go to repo → Actions tab
+   - Click latest "JJFO Daily News Scraper" run
+   - Click "Run scraper" job
+   - Scroll down to see output
+2. Verify Resend API key is correct (copy-paste again)
+3. Check investment@jjfo.com is in Email_Recipients sheet
+4. Check spam/promotions folder
+5. Wait 5 minutes (email can be delayed)
+
+PROBLEM: GitHub Actions says "Failed"
+SOLUTION:
+1. Click the failed run in Actions tab
+2. Click "Run scraper" job
+3. Read the error message
+4. Common errors:
+   - "credentials.json not found" → Check GOOGLE_CREDENTIALS secret
+   - "Sheet not found" → Check GOOGLE_SHEETS_ID secret
+   - "API key invalid" → Check RESEND_API_KEY secret
+5. Fix the secret and re-run
+
+PROBLEM: No articles found in email
+SOLUTION:
+1. Check company names match exactly in Google Sheets
+   - "Agnikul" not "agnikul" or "AGNIKUL"
+2. Check RSS feeds are working:
+   - Visit https://techcrunch.com/feed/ manually
+   - Visit https://inc42.com/feed/ manually
+3. Check GitHub Actions logs for errors
+4. Wait a few minutes (first run might be slow)
+
+PROBLEM: GitHub Actions not running at 8 AM
+SOLUTION:
+1. Check cron schedule in .github/workflows/daily-scrape.yml
+   - Should be: "30 2 * * *" (8 AM IST = 2:30 AM UTC)
+2. GitHub Actions can be delayed by 5-10 minutes
+3. Check GitHub Actions is enabled:
+   - Settings → Actions → General
+   - Select "Allow all actions and reusable workflows"
+4. Check workflow file is in correct location:
+   - .github/workflows/daily-scrape.yml (exact path)
+
+PROBLEM: "Permission denied" error
+SOLUTION:
+1. Go to Google Sheet
+2. Click Share
+3. Verify service account email has Editor access
+4. Re-share if needed
+
+PROBLEM: Scraper runs but sends empty email
+SOLUTION:
+1. Company names might not match article headlines
+2. Try adding more generic competitors
+3. Check RSS feeds have recent articles
+4. Wait a day for more articles to be published
+
+PROBLEM: Can't find Sheet ID
+SOLUTION:
+1. Open your Google Sheet
+2. Look at URL: https://docs.google.com/spreadsheets/d/[SHEET_ID]/edit
+3. Copy the long string between /d/ and /edit
+4. That's your Sheet ID
+
+PROBLEM: Can't find Service Account email
+SOLUTION:
+1. Open the JSON file you downloaded
+2. Search for "client_email"
+3. You'll see: "client_email": "xxx@xxx.iam.gserviceaccount.com"
+4. Copy that email
+
+PROBLEM: "Invalid JSON" error
+SOLUTION:
+1. When adding GOOGLE_CREDENTIALS secret:
+2. Open the JSON file in text editor
+3. Select ALL content (Ctrl+A)
+4. Copy (Ctrl+C)
+5. Paste into GitHub secret
+6. Don't add extra quotes or formatting
+
+ADVANCED TROUBLESHOOTING
+========================
+
+Q: How do I add a new news source?
+A: Edit scraper_v2.py:
+   1. Find "SOURCES = {" around line 40
+   2. Add: 'Source Name': 'https://source-url.com/',
+   3. Commit and push to GitHub
+
+Q: How do I change the email format?
+A: Edit scraper_v2.py:
+   1. Find "def format_email()" around line 180
+   2. Modify the body variable
+   3. Commit and push to GitHub
+
+Q: How do I filter by specific keywords?
+A: Edit scraper_v2.py:
+   1. Find "keywords = {" around line 110
+   2. Add more keywords to each category
+   3. Commit and push to GitHub
+
+Q: How do I increase/decrease articles per category?
+A: Edit scraper_v2.py:
+   1. Find "news[:5]" around line 200
+   2. Change 5 to desired number
+   3. Commit and push to GitHub
+
+CONTACT & SUPPORT
+=================
+
+For issues:
+1. Check this FAQ first
+2. Check DEPLOYMENT_GUIDE.txt
+3. Check GitHub Actions logs
+4. Check README.md
+
+If still stuck:
+- Re-read the step carefully
+- Copy-paste values again (no typos)
+- Delete and recreate that step
+- Start fresh if needed
+
+VERSION: 2.0
+CREATED: 2024-03-26
+LAST UPDATED: 2024-03-26

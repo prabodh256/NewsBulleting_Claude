@@ -1,0 +1,270 @@
+JJFO NEWS BULLETIN - DEPLOYMENT GUIDE (CSV-Based, No Google Cloud)
+==================================================================
+
+COMPLETELY FREE SETUP - NO CREDIT CARD NEEDED!
+Scrapes from 15 Premium Indian Startup News Sources
+
+NEWS SOURCES INCLUDED
+====================
+
+RSS Feeds (Real-time, 12 sources):
+✓ YourStory
+✓ Inc42
+✓ Entrackr
+✓ VCCircle
+✓ StartupTalky
+✓ IndianWeb2
+✓ TechCircle
+✓ The Ken
+✓ Analytics India Magazine
+✓ BW Disrupt
+✓ TechCrunch
+✓ Economic Times
+
+Direct Web Scraping (4 sources):
+✓ Inc42 Plus
+✓ Moneycontrol (Startups)
+✓ Business Standard (Startups)
+✓ Livemint (Startups)
+
+TOTAL: 16 Premium News Sources
+
+STEP 1: Create Resend Account (2 minutes)
+=========================================
+1. Go to: https://resend.com/
+2. Sign up with your email
+3. Go to API Keys section
+4. Create new API key
+5. COPY THIS KEY - You'll need it in Step 4
+
+STEP 2: Create GitHub Repository (3 minutes)
+=============================================
+1. Go to: https://github.com/
+2. Click "+" → "New repository"
+3. Name: "jjfo-news-bulletin"
+4. Select "Private"
+5. Click "Create repository"
+6. You'll see clone instructions
+
+STEP 3: Clone & Add Files (5 minutes)
+====================================
+1. Clone the repo to your computer:
+   git clone https://github.com/[YOUR_USERNAME]/jjfo-news-bulletin.git
+   cd jjfo-news-bulletin
+
+2. Copy these files from /home/ubuntu/jjfo-news-bulletin/:
+   - scraper.py (UPDATED with 16 sources)
+   - requirements.txt
+   - companies.csv
+   - recipients.csv
+   - dispatch_log.csv
+   - .github/workflows/daily-scrape.yml
+   - .gitignore
+
+3. Push to GitHub:
+   git add .
+   git commit -m "Add JJFO News Bulletin with 16 sources"
+   git push
+
+STEP 4: Add GitHub Secret (2 minutes)
+====================================
+1. Go to your GitHub repository
+2. Click "Settings" (top right)
+3. Click "Secrets and variables" → "Actions"
+4. Click "New repository secret"
+5. Add this secret:
+   - Name: RESEND_API_KEY
+   - Value: [Your Resend API key from Step 1]
+   - Click "Add secret"
+
+STEP 5: Customize Companies (5 minutes)
+======================================
+1. Edit companies.csv in your repo
+2. Add/remove companies as needed
+3. Format: Company Name, Sector, Competitors (comma-separated)
+4. Commit and push
+
+STEP 6: Customize Recipients (1 minute)
+=======================================
+1. Edit recipients.csv in your repo
+2. Add email addresses (one per line)
+3. Default: investment@jjfo.com
+4. Commit and push
+
+STEP 7: Test the System (2 minutes)
+==================================
+1. Go to your GitHub repository
+2. Click "Actions" tab
+3. Click "JJFO Daily News Scraper"
+4. Click "Run workflow"
+5. Wait 2-3 minutes (scraping 16 sources takes time)
+6. Check if it says "Success" (green checkmark)
+7. Check your email for the bulletin
+
+DONE!
+====
+Your system now:
+✓ Runs every day at 8:00 AM IST (2:30 AM UTC)
+✓ Scrapes real-time news from 16 premium sources
+✓ Sends email to all recipients in recipients.csv
+✓ Logs all activity to dispatch_log.csv
+✓ Completely free (no ongoing costs)
+✓ Completely automatic (no manual work)
+
+WHAT HAPPENS DAILY
+==================
+8:00 AM IST Every Day:
+1. GitHub Actions automatically triggers
+2. Scraper runs on GitHub's servers
+3. Scrapes 12 RSS feeds:
+   - YourStory
+   - Inc42
+   - Entrackr
+   - VCCircle
+   - StartupTalky
+   - IndianWeb2
+   - TechCircle
+   - The Ken
+   - Analytics India Magazine
+   - BW Disrupt
+   - TechCrunch
+   - Economic Times
+4. Scrapes 4 direct sources:
+   - Inc42 Plus
+   - Moneycontrol (Startups)
+   - Business Standard (Startups)
+   - Livemint (Startups)
+5. Finds articles mentioning your companies
+6. Categorizes by priority (Funding → M&A → Sector → Other)
+7. Removes duplicates
+8. Formats email
+9. Sends to all recipients in recipients.csv
+10. Logs results to dispatch_log.csv
+
+TROUBLESHOOTING
+===============
+
+Email not received?
+- Check GitHub Actions logs (Actions tab → latest run)
+- Verify Resend API key is correct
+- Check recipients.csv has correct emails
+- Check spam folder
+- Note: Scraping 16 sources takes 2-3 minutes, so email may be delayed
+
+No articles found?
+- Check company names match exactly in companies.csv
+- Check RSS feeds are working (visit URLs manually)
+- Check GitHub Actions logs for errors
+- First run may take longer as it scrapes all sources
+
+GitHub Actions not running?
+- Check cron schedule in .github/workflows/daily-scrape.yml
+- Should be: "30 2 * * *" (8 AM IST)
+- Verify all secrets are set correctly
+- Check GitHub Actions is enabled
+
+Scraper timing out?
+- Scraping 16 sources takes 2-3 minutes
+- GitHub Actions has 35-minute timeout, so this is fine
+- If timeout occurs, check internet connection or source availability
+
+CUSTOMIZATION
+=============
+
+Change time?
+- Edit .github/workflows/daily-scrape.yml
+- Change cron: "30 2 * * *" to your desired time
+- Format: "MM HH * * *" (minutes hours * * *)
+- Example: "0 9 * * *" = 9:00 AM UTC
+
+Add more companies?
+- Edit companies.csv
+- Add rows: Company Name, Sector, Competitors
+- Commit and push
+
+Add more recipients?
+- Edit recipients.csv
+- Add emails (one per line)
+- Commit and push
+
+Change email format?
+- Edit scraper.py function format_email()
+- Modify the body variable
+- Commit and push
+
+Add more news sources?
+- Edit scraper.py
+- Add to RSS_FEEDS or SOURCES dictionaries
+- Commit and push
+
+FREE TIER COVERAGE
+==================
+GitHub Actions: 2000 min/month (you use ~3 min/day = ~90 min/month = safe)
+Resend Email: 100 emails/day (you send 1/day = safe)
+RSS Feeds: Unlimited
+Web Scraping: Unlimited (rate-limited)
+
+TOTAL COST: $0/month
+
+NEWS SOURCES DETAILS
+====================
+
+RSS Feeds (Automatic, Real-time):
+1. YourStory - https://yourstory.com/feed
+   Coverage: Startups, funding, technology
+   
+2. Inc42 - https://inc42.com/feed/
+   Coverage: Indian startups, venture capital, tech news
+   
+3. Entrackr - https://entrackr.com/feed/
+   Coverage: Startup ecosystem, funding rounds, exits
+   
+4. VCCircle - https://www.vccircle.com/feed/
+   Coverage: Venture capital, M&A, funding
+   
+5. StartupTalky - https://www.startuptalky.com/feed/
+   Coverage: Startup stories, founders, business
+   
+6. IndianWeb2 - https://indianweb2.com/feed/
+   Coverage: Indian internet, startups, technology
+   
+7. TechCircle - https://techcircle.vccircle.com/feed/
+   Coverage: Technology startups, venture capital
+   
+8. The Ken - https://the-ken.com/feed/
+   Coverage: Deep-dive analysis, business, startups
+   
+9. Analytics India Magazine - https://analyticsindiamag.com/feed/
+   Coverage: AI, data science, analytics startups
+   
+10. BW Disrupt - https://www.bwdisrupt.com/feed/
+    Coverage: Disruptive startups, innovation, technology
+    
+11. TechCrunch - https://techcrunch.com/feed/
+    Coverage: Global tech news, startups, venture capital
+    
+12. Economic Times - https://economictimes.indiatimes.com/rssfeedstopics.cms?feedtype=json&feed_id=1715249553
+    Coverage: Business, economy, startups
+
+Direct Web Scraping (Manual, Real-time):
+1. Inc42 Plus - https://inc42plus.com/
+   Coverage: Premium startup analysis and insights
+   
+2. Moneycontrol Startups - https://www.moneycontrol.com/news/startups/
+   Coverage: Startup news, funding, IPOs
+   
+3. Business Standard Startups - https://www.business-standard.com/startups
+   Coverage: Startup business news and analysis
+   
+4. Livemint Startups - https://www.livemint.com/startups
+   Coverage: Startup ecosystem, funding, business
+
+SUPPORT
+=======
+See README.md for full documentation
+See DEPLOY.txt for detailed setup
+See QUICKSTART.txt for quick reference
+
+VERSION: 3.1 (16 Premium News Sources)
+CREATED: 2024-03-26
+STATUS: READY FOR DEPLOYMENT

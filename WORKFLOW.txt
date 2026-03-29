@@ -1,0 +1,221 @@
+JJFO NEWS BULLETIN v2 - WORKFLOW & ARCHITECTURE
+================================================
+
+DAILY WORKFLOW (Automatic)
+==========================
+
+8:00 AM IST (2:30 AM UTC)
+        |
+        v
+GitHub Actions Triggers
+        |
+        v
+Python Scraper Starts
+        |
+        +---> RSS Feeds Scraper
+        |     ├─ TechCrunch RSS
+        |     ├─ Inc42 RSS
+        |     └─ Economic Times RSS
+        |
+        +---> Direct Web Scraper
+        |     ├─ The Ken
+        |     ├─ VCCircle
+        |     └─ The Captable
+        |
+        v
+All Articles Collected
+        |
+        v
+Google Sheets (Read Companies)
+        |
+        v
+Match Articles to Companies
+        |
+        v
+Categorize by Priority
+        |
+        +---> Portfolio Funding
+        +---> Competitor Funding
+        +---> Portfolio M&A
+        +---> Competitor M&A
+        +---> Sector News
+        +---> Other News
+        |
+        v
+Remove Duplicates
+        |
+        v
+Format Email
+        |
+        v
+Send via Resend
+        |
+        v
+investment@jjfo.com
+        |
+        v
+Log to Google Sheets
+        |
+        v
+Done!
+
+SYSTEM ARCHITECTURE
+===================
+
+GitHub Repository
+├─ scraper_v2.py
+├─ .github/workflows/daily-scrape.yml
+├─ requirements.txt
+└─ index.html
+        |
+        v
+GitHub Actions (Scheduler)
+Runs at 8 AM IST daily
+        |
+        v
+Python Scraper
+├─ Scrapes RSS Feeds
+├─ Scrapes Web Sources
+└─ Processes News
+        |
+        v
+Google Sheets API
+├─ Read: Companies List
+└─ Write: Dispatch Logs
+        |
+        v
+Resend Email Service
+Sends formatted email
+        |
+        v
+investment@jjfo.com
+
+DATA FLOW
+=========
+
+Companies Database (Google Sheets)
+├─ Company Name
+├─ Sector
+└─ Competitors
+        |
+        v
+Scraper Reads Companies
+        |
+        v
+Searches News Sources
+        |
+        v
+Finds Matching Articles
+        |
+        v
+Categorizes by Priority
+        |
+        v
+Removes Duplicates
+        |
+        v
+Formats Email
+        |
+        v
+Sends Email
+        |
+        v
+Logs Results to Google Sheets
+
+FREE TIER USAGE
+===============
+
+GitHub Actions
+├─ Limit: 2000 min/month
+├─ Your usage: ~2 min/day = ~60 min/month
+└─ Status: SAFE
+
+Google Sheets
+├─ Limit: Unlimited
+├─ Your usage: Read/write daily
+└─ Status: SAFE
+
+Resend Email
+├─ Limit: 100 emails/day
+├─ Your usage: 1 email/day
+└─ Status: SAFE
+
+RSS Feeds
+├─ Limit: Unlimited
+├─ Your usage: ~3 feeds/day
+└─ Status: SAFE
+
+Web Scraping
+├─ Limit: Unlimited (rate-limited)
+├─ Your usage: ~3 sources/day
+└─ Status: SAFE
+
+TOTAL MONTHLY COST: $0
+
+DEPLOYMENT SEQUENCE
+===================
+
+Step 1: Create Resend Account (2 min)
+Step 2: Create Google Sheet (3 min)
+Step 3: Create Google Service Account (5 min)
+Step 4: Share Sheet with Service Account (2 min)
+Step 5: Create GitHub Repository (5 min)
+Step 6: Add Project Files (5 min)
+Step 7: Add GitHub Secrets (3 min)
+Step 8: Add Company Data (2 min)
+Step 9: Enable GitHub Pages (2 min)
+Step 10: Test System (2 min)
+Step 11: Configure Domain (Optional, 5 min)
+
+TOTAL TIME: 30-40 minutes
+
+TESTING CHECKLIST
+=================
+
+Before going live:
+□ All secrets added to GitHub
+□ Google Sheet created with 4 tabs
+□ Service account has editor access
+□ Company data added to sheet
+□ investment@jjfo.com in Email_Recipients
+□ GitHub Actions workflow enabled
+□ Manual test run successful
+□ Email received in inbox
+□ Dispatch log recorded
+
+MONITORING
+==========
+
+Check GitHub Actions:
+1. Go to repo → Actions tab
+2. Click "JJFO Daily News Scraper"
+3. View recent runs
+4. Check for failures
+5. Read logs if failed
+
+Check Google Sheets:
+1. Go to Dispatch_Logs sheet
+2. Verify daily entries
+3. Check status is "Success"
+4. Note yield (# articles)
+
+Check Email:
+1. Verify arrives at 8 AM IST
+2. Check format is correct
+3. Verify links work
+4. Check for relevant articles
+
+SCALING
+=======
+
+If you want to scale:
+- Add more companies: Just add to Google Sheet
+- Add more sources: Edit SOURCES in scraper_v2.py
+- Change time: Edit cron in daily-scrape.yml
+- Add more recipients: Add to Email_Recipients sheet
+- Customize categories: Edit keywords in scraper_v2.py
+
+All changes are free and automatic!
+
+VERSION: 2.0
+CREATED: 2024-03-26

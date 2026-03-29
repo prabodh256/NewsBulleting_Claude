@@ -1,0 +1,97 @@
+JJFO NEWS BULLETIN - QUICK START GUIDE
+======================================
+
+WHAT YOU NEED TO DO (In Order)
+==============================
+
+1. CREATE NEWSAPI ACCOUNT (2 minutes)
+   URL: https://newsapi.org/
+   - Sign up with email
+   - Copy your API key
+   - SAVE THIS KEY
+
+2. CREATE RESEND ACCOUNT (2 minutes)
+   URL: https://resend.com/
+   - Sign up with email
+   - Create API key
+   - SAVE THIS KEY
+
+3. CREATE GOOGLE SHEET (3 minutes)
+   URL: https://sheets.google.com/
+   - Create new sheet: "JJFO News Bulletin"
+   - Create 4 tabs:
+     a) Companies (columns: Company Name, Sector, Competitors)
+     b) Email_Recipients (columns: Email)
+     c) News_Items (columns: Headline, URL, Source, Company, Category, Published_At)
+     d) Dispatch_Logs (columns: Timestamp, Status, Yield, Details)
+   - Copy Sheet ID from URL (between /d/ and /edit)
+   - SAVE THIS ID
+
+4. CREATE GOOGLE SERVICE ACCOUNT (5 minutes)
+   URL: https://console.cloud.google.com/
+   - Create new project: "JJFO News Bulletin"
+   - Enable Google Sheets API
+   - Create Service Account
+   - Download JSON credentials
+   - Share Google Sheet with service account email
+   - SAVE THE JSON FILE
+
+5. CREATE GITHUB REPOSITORY (3 minutes)
+   URL: https://github.com/
+   - Create new private repository: "jjfo-news-bulletin"
+   - Clone locally
+   - Copy all files from /home/ubuntu/jjfo-news-bulletin/ to your repo
+   - Push to GitHub
+
+6. ADD GITHUB SECRETS (2 minutes)
+   In your GitHub repo:
+   Settings → Secrets and variables → Actions
+   
+   Add these secrets:
+   - NEWSAPI_KEY = [Your NewsAPI key]
+   - RESEND_API_KEY = [Your Resend API key]
+   - GOOGLE_SHEETS_ID = [Your Sheet ID]
+   - GOOGLE_CREDENTIALS = [Your Google Service Account JSON as string]
+
+7. ENABLE GITHUB PAGES (1 minute)
+   In your GitHub repo:
+   Settings → Pages
+   - Select "Deploy from a branch"
+   - Select "main"
+   - Save
+
+8. ADD INITIAL DATA (2 minutes)
+   In your Google Sheet:
+   - Go to "Companies" tab
+   - Copy data from companies_data.json
+   - Go to "Email_Recipients" tab
+   - Add: investment@jjfo.com
+
+DONE! 
+=====
+Your system will now:
+- Run every day at 8:00 AM IST (2:30 AM UTC)
+- Scrape news from NewsAPI
+- Send email to investment@jjfo.com
+- Log results in Google Sheets
+
+TESTING
+=======
+To test manually:
+$ cd /home/ubuntu/jjfo-news-bulletin
+$ python scraper.py
+
+To test GitHub Actions:
+1. Go to your GitHub repo
+2. Click "Actions" tab
+3. Click "JJFO Daily News Scraper"
+4. Click "Run workflow"
+5. Check logs
+
+SUPPORT
+=======
+See CREDENTIALS.md for detailed setup instructions
+See README.md for full documentation
+See SETUP_SUMMARY.txt for complete overview
+
+Questions? Check the troubleshooting section in CREDENTIALS.md

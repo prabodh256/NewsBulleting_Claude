@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Competitor Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mt-3 mb-3">
+  <div>
+    <h4 class="mb-0 fw-bold">Tracked Companies
+      <span class="badge bg-secondary ms-1" style="font-size:.85rem;">
+        {{ companies | length }}
+      </span>
+    </h4>
+    <p class="text-muted mb-0" style="font-size:.85rem;">
+      All companies + their competitors are scraped for news daily at 2:30 AM GMT.
+    </p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="/add" class="btn btn-primary btn-sm">+ Add Company</a>
+    <form method="POST" action="/run-now" class="m-0">
+      <button class="btn btn-success btn-sm" type="submit"
+              onclick="this.disabled=true; this.innerText='Running…'; this.form.submit();">
+        ▶ Run Scraper Now
+      </button>
+    </form>
+  </div>
+</div>
+
+{% if companies %}
+<div class="card shadow-sm border-0">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0 align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th style="width:190px;">Company</th>
+            <th style="width:115px;">Sector</th>
+            <th>Competitors
+              <span class="fw-normal text-muted" style="font-size:.8rem;">
+                — click 🔍 to verify · click ✏️ to edit
+              </span>
+            </th>
+            <th style="width:90px;text-align:center;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for name, data in companies.items() %}
+          <tr>
+
+            <!-- Company name + verify link -->
+            <td>
+              <strong>{{ name }}</strong>
+              <a href="https://www.google.com/search?q={{ name | urlencode }}+startup+India"
+                 target="_blank" rel="noopener"
+                 title="Verify {{ name }} on Google"
+                 style="font-size:.78rem;margin-left:5px;text-decoration:none;color:#6b7280;">
+                🔍
+              </a>
+            </td>
+
+            <td>
+              <span class="badge-sector">{{ data.sector or '—' }}</span>
+            </td>
+
+            <!-- Competitors — each is a clickable verify chip -->
+            <td>
+              {% if data.competitors %}
+                <div class="d-flex flex-wrap gap-1">
+                  {% for comp in data.competitors %}
+                  <a href="https://www.google.com/search?q={{ comp | urlencode }}+startup"
+                     target="_blank" rel="noopener"
+                     title="Verify {{ comp }}"
+                     class="competitor-chip">
+                    {{ comp }} <span style="opacity:.55;">🔍</span>
+                  </a>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <span class="text-muted fst-italic">None — click ✏️ to add</span>
+              {% endif %}
+            </td>
+
+            <!-- Actions -->
+            <td class="text-center">
+              <div class="d-flex gap-1 justify-content-center">
+
+                <!-- Edit button → triggers modal -->
+                <button class="btn btn-outline-primary btn-sm"
+                        title="Edit sector & competitors"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editModal"
+                        data-name="{{ name }}"
+                        data-sector="{{ data.sector }}"
+                        data-competitors="{{ data.competitors | join(', ') }}">
+                  ✏️
+                </button>
+
+                <!-- Delete button -->
+                <form method="POST" action="/delete/{{ name }}" class="m-0">
+                  <button class="btn btn-outline-danger btn-sm"
+                          onclick="return confirm('Remove {{ name }}?')"
+                          title="Delete">✕</button>
+                </form>
+
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ── Edit Modal ─────────────────────────────────────────────────────── -->
+<div class="modal fade" id="editModal" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <form method="POST" id="editForm" action="">
+        <div class="modal-header py-2">
+          <h6 class="modal-title mb-0">✏️ Edit <strong id="editCompanyName"></strong></h6>
+          <button type="button" class="btn-close btn-sm" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body py-3">
+          <input type="hidden" name="sector" id="editSector">
+          <label class="form-label fw-semibold mb-1" style="font-size:.85rem;">
+            Competitors <span class="text-muted fw-normal">(comma separated)</span>
+          </label>
+          <input type="text"
+                 name="competitors"
+                 id="editCompetitors"
+                 class="form-control form-control-sm"
+                 placeholder="e.g. Razorpay, Paytm, PhonePe">
+          <div class="mt-2" id="editVerifyLinks" style="font-size:.78rem;"></div>
+        </div>
+        <div class="modal-footer py-2">
+          <button type="button" class="btn btn-outline-secondary btn-sm"
+                  data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<div class="text-center py-5 text-muted">
+  <div style="font-size:3rem;">📭</div>
+  <h5 class="mt-3">No companies tracked yet</h5>
+  <p>Click <a href="/add">+ Add Company</a> to get started.</p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<style>
+  .competitor-chip {
+    display: inline-block;
+    background: #f1f3f5;
+    color: #343a40;
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: .78rem;
+    text-decoration: none;
+    transition: background .15s;
+    white-space: nowrap;
+  }
+  .competitor-chip:hover {
+    background: #e2eafc;
+    border-color: #90b4f8;
+    color: #0d3b99;
+  }
+</style>
+
+<script>
+  // When the Edit modal opens, populate it with the company's current data
+  document.getElementById('editModal').addEventListener('show.bs.modal', function(event) {
+    var btn         = event.relatedTarget;
+    var name        = btn.getAttribute('data-name');
+    var sector      = btn.getAttribute('data-sector');
+    var competitors = btn.getAttribute('data-competitors');
+
+    document.getElementById('editCompanyName').textContent  = name;
+    document.getElementById('editCompetitors').value        = competitors;
+    document.getElementById('editForm').action              = '/edit/' + encodeURIComponent(name);
+
+    // Render verify links for current competitors
+    renderVerifyLinks(competitors);
+
+    // Update verify links live as the user types
+    document.getElementById('editCompetitors').oninput = function() {
+      renderVerifyLinks(this.value);
+    };
+  });
+
+  function renderVerifyLinks(competitorsStr) {
+    var container = document.getElementById('editVerifyLinks');
+    var names = competitorsStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
+    if (names.length === 0) { container.innerHTML = ''; return; }
+    var html = '<span class="text-muted">Verify: </span>';
+    names.forEach(function(n) {
+      var url = 'https://www.google.com/search?q=' + encodeURIComponent(n + ' startup');
+      html += '<a href="' + url + '" target="_blank" rel="noopener" '
+            + 'style="margin-right:8px;color:#0d6efd;">' + n + ' 🔍</a>';
+    });
+    container.innerHTML = html;
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JJFO News Bulletin - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Newsreader', serif; }
+        .brand-primary { color: #0A0A0A; }
+        .brand-accent { color: #d02b16; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <nav class="bg-white border-b-2 border-black p-6">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold brand-primary">JJFO News Bulletin</h1>
+            <div class="text-sm text-gray-600">
+                <p id="current-user">Loading...</p>
+                <button onclick="logout()" class="text-red-600 hover:text-red-800 mt-2">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto p-8">
+        <!-- System Status -->
+        <div class="bg-white border-2 border-black p-6 mb-8">
+            <h2 class="text-2xl font-bold brand-primary mb-4">System Status</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-gray-600">Next Scheduled Run</p>
+                    <p class="text-xl font-bold brand-accent">8:00 AM IST Daily</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600">Last Dispatch</p>
+                    <p class="text-xl font-bold" id="last-dispatch">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex gap-4 mb-8 border-b-2 border-black">
+            <button onclick="switchTab('companies')" class="px-4 py-2 font-bold border-b-2 border-black brand-primary">Companies</button>
+            <button onclick="switchTab('recipients')" class="px-4 py-2 font-bold text-gray-600 hover:brand-primary">Recipients</button>
+            <button onclick="switchTab('logs')" class="px-4 py-2 font-bold text-gray-600 hover:brand-primary">Dispatch Logs</button>
+        </div>
+
+        <!-- Companies Tab -->
+        <div id="companies-tab" class="tab-content">
+            <div class="bg-white border-2 border-black p-6 mb-6">
+                <h3 class="text-xl font-bold brand-primary mb-4">Portfolio Companies</h3>
+                <button onclick="openAddCompanyModal()" class="bg-black text-white px-4 py-2 font-bold mb-4">+ Add Company</button>
+                <div id="companies-list" class="space-y-2">
+                    <p class="text-gray-600">Loading companies...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recipients Tab -->
+        <div id="recipients-tab" class="tab-content hidden">
+            <div class="bg-white border-2 border-black p-6 mb-6">
+                <h3 class="text-xl font-bold brand-primary mb-4">Email Recipients</h3>
+                <button onclick="openAddRecipientModal()" class="bg-black text-white px-4 py-2 font-bold mb-4">+ Add Recipient</button>
+                <div id="recipients-list" class="space-y-2">
+                    <p class="text-gray-600">Loading recipients...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs Tab -->
+        <div id="logs-tab" class="tab-content hidden">
+            <div class="bg-white border-2 border-black p-6">
+                <h3 class="text-xl font-bold brand-primary mb-4">Recent Dispatch Logs</h3>
+                <div id="logs-list" class="space-y-2">
+                    <p class="text-gray-600">Loading logs...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Company Modal -->
+    <div id="add-company-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white border-2 border-black p-6 max-w-md w-full">
+            <h3 class="text-xl font-bold brand-primary mb-4">Add Company</h3>
+            <input type="text" id="company-name" placeholder="Company Name" class="w-full border border-gray-300 p-2 mb-3">
+            <input type="text" id="company-sector" placeholder="Sector" class="w-full border border-gray-300 p-2 mb-3">
+            <textarea id="company-desc" placeholder="Description" class="w-full border border-gray-300 p-2 mb-3 h-20"></textarea>
+            <div class="flex gap-2">
+                <button onclick="saveCompany()" class="flex-1 bg-black text-white px-4 py-2 font-bold">Save</button>
+                <button onclick="closeAddCompanyModal()" class="flex-1 bg-gray-300 text-black px-4 py-2 font-bold">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Recipient Modal -->
+    <div id="add-recipient-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white border-2 border-black p-6 max-w-md w-full">
+            <h3 class="text-xl font-bold brand-primary mb-4">Add Email Recipient</h3>
+            <input type="email" id="recipient-email" placeholder="Email Address" class="w-full border border-gray-300 p-2 mb-3">
+            <div class="flex gap-2">
+                <button onclick="saveRecipient()" class="flex-1 bg-black text-white px-4 py-2 font-bold">Save</button>
+                <button onclick="closeAddRecipientModal()" class="flex-1 bg-gray-300 text-black px-4 py-2 font-bold">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple localStorage-based dashboard (for demo purposes)
+        
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+        }
+
+        function openAddCompanyModal() {
+            document.getElementById('add-company-modal').classList.remove('hidden');
+        }
+
+        function closeAddCompanyModal() {
+            document.getElementById('add-company-modal').classList.add('hidden');
+        }
+
+        function openAddRecipientModal() {
+            document.getElementById('add-recipient-modal').classList.remove('hidden');
+        }
+
+        function closeAddRecipientModal() {
+            document.getElementById('add-recipient-modal').classList.add('hidden');
+        }
+
+        function saveCompany() {
+            const name = document.getElementById('company-name').value;
+            const sector = document.getElementById('company-sector').value;
+            const desc = document.getElementById('company-desc').value;
+            
+            if (name && sector) {
+                alert('Company added! (Note: Full integration requires Google Sheets connection)');
+                closeAddCompanyModal();
+            } else {
+                alert('Please fill all fields');
+            }
+        }
+
+        function saveRecipient() {
+            const email = document.getElementById('recipient-email').value;
+            if (email) {
+                alert('Recipient added! (Note: Full integration requires Google Sheets connection)');
+                closeAddRecipientModal();
+            } else {
+                alert('Please enter email');
+            }
+        }
+
+        function logout() {
+            alert('Logged out');
+            window.location.reload();
+        }
+
+        // Initialize
+        document.getElementById('current-user').textContent = 'Admin Dashboard';
+        document.getElementById('last-dispatch').textContent = 'Pending first run';
+    </script>
+</body>
+</html>

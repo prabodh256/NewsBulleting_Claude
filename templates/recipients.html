@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Email Recipients — Competitor Tracker{% endblock %}
+
+{% block content %}
+<div class="mt-3" style="max-width:520px;">
+  <h4 class="fw-bold mb-1">Email Recipients</h4>
+  <p class="text-muted mb-4" style="font-size:.9rem;">
+    The daily 2:30 AM news digest will be emailed to everyone on this list.
+  </p>
+
+  <!-- Add new recipient -->
+  <form method="POST" action="/recipients/add" class="mb-4">
+    <div class="input-group shadow-sm">
+      <input type="email"
+             name="email"
+             class="form-control"
+             placeholder="name@example.com"
+             required>
+      <button class="btn btn-primary px-4" type="submit">+ Add</button>
+    </div>
+  </form>
+
+  <!-- Recipient list -->
+  {% if recipients %}
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom fw-semibold">
+      Recipients
+      <span class="badge bg-secondary ms-1">{{ recipients | length }}</span>
+    </div>
+    <ul class="list-group list-group-flush">
+      {% for email in recipients %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>📧 {{ email }}</span>
+        <form method="POST" action="/recipients/delete" class="m-0">
+          <input type="hidden" name="email" value="{{ email }}">
+          <button class="btn btn-outline-danger btn-sm"
+                  onclick="return confirm('Remove {{ email }}?')">Remove</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% else %}
+  <div class="text-center py-4 text-muted">
+    <div style="font-size:2.5rem;">📭</div>
+    <p class="mt-2">No recipients yet — add one above.</p>
+  </div>
+  {% endif %}
+
+  <div class="mt-4">
+    <a href="/" class="btn btn-outline-secondary btn-sm">← Back to Dashboard</a>
+  </div>
+</div>
+{% endblock %}

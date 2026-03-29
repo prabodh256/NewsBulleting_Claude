@@ -1,0 +1,235 @@
+JJFO NEWS BULLETIN v2 - DEPLOYMENT GUIDE
+==========================================
+
+WHAT'S NEW IN v2
+================
+✓ Direct web scraping (no 24h delay)
+✓ Real-time news from The Ken, VCCircle, TechCrunch, Inc42, Economic Times
+✓ RSS feeds for instant updates
+✓ Completely free (no API costs)
+✓ Automatic daily execution at 8 AM IST
+
+STEP-BY-STEP DEPLOYMENT
+=======================
+
+STEP 1: Create Resend Account (2 minutes)
+-----------------------------------------
+1. Go to: https://resend.com/
+2. Sign up with your email
+3. Go to API Keys section
+4. Create new API key
+5. Copy the key
+6. SAVE THIS: You'll need it in Step 5
+
+STEP 2: Create Google Sheet (3 minutes)
+---------------------------------------
+1. Go to: https://sheets.google.com/
+2. Create new sheet: "JJFO News Bulletin"
+3. Create 4 tabs by renaming sheets:
+   
+   Tab 1: Companies
+   - Column A: Company Name
+   - Column B: Sector
+   - Column C: Competitors
+   
+   Tab 2: Email_Recipients
+   - Column A: Email
+   
+   Tab 3: News_Items
+   - Column A: Headline
+   - Column B: URL
+   - Column C: Source
+   - Column D: Company
+   - Column E: Category
+   - Column F: Published_At
+   
+   Tab 4: Dispatch_Logs
+   - Column A: Timestamp
+   - Column B: Status
+   - Column C: Yield
+   - Column D: Details
+
+4. Copy the Sheet ID from URL (between /d/ and /edit)
+5. SAVE THIS: You'll need it in Step 5
+
+STEP 3: Create Google Service Account (5 minutes)
+-------------------------------------------------
+1. Go to: https://console.cloud.google.com/
+2. Click "Select a project" → "New Project"
+3. Name: "JJFO News Bulletin"
+4. Click Create
+5. Wait for project to be created
+6. Search for "Google Sheets API" in search bar
+7. Click on it → Click "Enable"
+8. Go to "Service Accounts" (search in top bar)
+9. Click "Create Service Account"
+10. Name: "jjfo-news-bulletin"
+11. Click Create and Continue
+12. Grant Editor role
+13. Click Continue → Create
+14. Click on the service account you just created
+15. Go to "Keys" tab
+16. Click "Add Key" → "Create new key"
+17. Select "JSON"
+18. Click Create (JSON file downloads)
+19. SAVE THIS FILE: You'll need it in Step 5
+
+STEP 4: Share Google Sheet with Service Account (2 minutes)
+-----------------------------------------------------------
+1. Open the JSON file you downloaded
+2. Find the line: "client_email": "xxx@xxx.iam.gserviceaccount.com"
+3. Copy that email address
+4. Go to your Google Sheet
+5. Click "Share" button (top right)
+6. Paste the service account email
+7. Give "Editor" access
+8. Click Share
+
+STEP 5: Create GitHub Repository (5 minutes)
+---------------------------------------------
+1. Go to: https://github.com/
+2. Click "+" → "New repository"
+3. Name: "jjfo-news-bulletin"
+4. Select "Private"
+5. Click "Create repository"
+6. You'll see clone instructions
+7. Clone to your computer:
+   git clone https://github.com/[YOUR_USERNAME]/jjfo-news-bulletin.git
+   cd jjfo-news-bulletin
+
+STEP 6: Add Project Files to GitHub (5 minutes)
+-----------------------------------------------
+1. Copy these files from /home/ubuntu/jjfo-news-bulletin/ to your cloned repo:
+   - scraper_v2.py (rename to scraper.py)
+   - .github/workflows/daily-scrape.yml
+   - requirements.txt
+   - index.html
+   - companies_data.json
+   - .gitignore
+
+2. Delete the old scraper.py (if exists)
+
+3. Push to GitHub:
+   git add .
+   git commit -m "Add JJFO News Bulletin v2"
+   git push
+
+STEP 7: Add GitHub Secrets (3 minutes)
+--------------------------------------
+1. Go to your GitHub repository
+2. Click "Settings" (top right)
+3. Click "Secrets and variables" → "Actions"
+4. Click "New repository secret"
+5. Add these 3 secrets:
+
+   Secret 1:
+   - Name: RESEND_API_KEY
+   - Value: [Your Resend API key from Step 1]
+   - Click "Add secret"
+
+   Secret 2:
+   - Name: GOOGLE_SHEETS_ID
+   - Value: [Your Sheet ID from Step 2]
+   - Click "Add secret"
+
+   Secret 3:
+   - Name: GOOGLE_CREDENTIALS
+   - Value: [Entire contents of JSON file from Step 3]
+   - Click "Add secret"
+
+STEP 8: Add Initial Company Data (2 minutes)
+---------------------------------------------
+1. Go to your Google Sheet
+2. Go to "Companies" tab
+3. Add your 60+ companies:
+   - Column A: Company Name (e.g., Agnikul)
+   - Column B: Sector (e.g., SpaceTech)
+   - Column C: Competitors (comma-separated, e.g., Skyroot Aerospace, Relativity Space)
+
+4. Go to "Email_Recipients" tab
+5. Add: investment@jjfo.com
+
+STEP 9: Enable GitHub Pages (2 minutes)
+---------------------------------------
+1. Go to your GitHub repository
+2. Click "Settings"
+3. Scroll down to "Pages"
+4. Under "Build and deployment"
+5. Select "Deploy from a branch"
+6. Select "main" branch
+7. Click Save
+8. Wait 1-2 minutes
+9. Your dashboard will be at: https://[YOUR_USERNAME].github.io/jjfo-news-bulletin/
+
+STEP 10: Test the System (2 minutes)
+------------------------------------
+1. Go to your GitHub repository
+2. Click "Actions" tab
+3. Click "JJFO Daily News Scraper"
+4. Click "Run workflow"
+5. Wait 1-2 minutes
+6. Check if it says "Success" (green checkmark)
+7. Check your email for the bulletin
+
+STEP 11: Configure Domain (Optional, 5 minutes)
+-----------------------------------------------
+1. Go to your domain registrar (GoDaddy, Namecheap, etc.)
+2. Find DNS settings
+3. Add CNAME record:
+   - Name: app (or @ for root)
+   - Value: [YOUR_USERNAME].github.io
+4. Wait 24-48 hours for DNS to propagate
+5. Access at: https://app.jjfo.in/
+
+DONE!
+=====
+Your system now:
+✓ Runs every day at 8:00 AM IST (2:30 AM UTC)
+✓ Scrapes real-time news from multiple sources
+✓ Sends email to investment@jjfo.com
+✓ Logs all activity to Google Sheets
+✓ Completely free (no ongoing costs)
+✓ Completely automatic (no manual work)
+
+WHAT HAPPENS DAILY
+==================
+8:00 AM IST:
+1. GitHub Actions automatically triggers
+2. Scraper runs on GitHub's servers
+3. Scrapes RSS feeds (TechCrunch, Inc42, Economic Times)
+4. Scrapes direct sources (The Ken, VCCircle, The Captable)
+5. Finds articles mentioning your companies
+6. Categorizes by priority
+7. Removes duplicates
+8. Formats email
+9. Sends to investment@jjfo.com
+10. Logs results to Google Sheets
+
+TROUBLESHOOTING
+===============
+
+Email not received?
+- Check GitHub Actions logs (Actions tab → workflow → latest run)
+- Verify Resend API key is correct
+- Check investment@jjfo.com is in Email_Recipients sheet
+- Check spam folder
+
+No articles found?
+- Check company names match exactly in Google Sheets
+- Check RSS feeds are working (visit URLs manually)
+- Check GitHub Actions logs for errors
+
+GitHub Actions not running?
+- Check cron schedule in .github/workflows/daily-scrape.yml
+- Verify all secrets are set correctly
+- Check GitHub Actions is enabled (Settings → Actions)
+
+SUPPORT
+=======
+See README.md for full documentation
+See CREDENTIALS.md for detailed setup
+See QUICKSTART.txt for quick reference
+
+VERSION: 2.0
+CREATED: 2024-03-26
+STATUS: READY FOR DEPLOYMENT
